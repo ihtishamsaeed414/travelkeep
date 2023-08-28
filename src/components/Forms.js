@@ -26,9 +26,8 @@ export default function Form({onAddItem}) {
       <h3>what do you need for your trip?</h3>
       {/* For selection of id */}
       <select value={selectedNumber} onChange={handleSelectChange}>
-        <option >1</option>
         {Array.from({ length: 20 }, (_, index) => (
-          <option key={index} value={index + 1  }>
+          <option key={index} value={index + 1 }>
             {index + 1}
           </option>
         ))}
