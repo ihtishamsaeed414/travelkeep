@@ -1,45 +1,35 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "./Forms";
 import Logo from "./Logo";
 import PackingList from "./PackingList";
 import Stats from "./Stats";
 
-// const initialItems = [
-//   { id: 1, description: "Passports", quantity: 2, packed: false },
-//   { id: 2, description: "Socks", quantity: 12, packed: false },
-// ];
 function App() {
-  const storedItems = JSON.parse(localStorage.getItem('packingItems')) || [];
-  const [packingItems, setPackingItems] = useState(storedItems);
+  const [packingItems, setPackingItems] = useState([]);
 
   const handleAddItem = newItem => {
-    const updatedItems = [...packingItems, newItem];
-    setPackingItems(updatedItems);
-    localStorage.setItem('packingItems', JSON.stringify(updatedItems));
+    setPackingItems(prevItems => [...prevItems, newItem]);
   };
 
   const handleDeleteItem = index => {
-    const updatedItems = packingItems.filter((item, i) => i !== index);
-    setPackingItems(updatedItems);
-    localStorage.setItem('packingItems', JSON.stringify(updatedItems));
+    setPackingItems(prevItems => prevItems.filter((item, i) => i !== index));
   };
 
   const handleClearItems = () => {
     setPackingItems([]);
-    localStorage.removeItem('packingItems');
-    alert('Are you Sure you want to delete all items?');
-  };
-  const handleCheckboxChange = (index, isChecked) => {
-    const updatedItems = [...packingItems];
-    updatedItems[index].packed = isChecked;
-    setPackingItems(updatedItems);
+    alert('Are you sure you want to delete all items?');
   };
 
-  const [selectedCount, setSelectedCount] = useState(0);
-  useEffect(() => {
-    const newSelectedCount = packingItems.filter(item => item.packed).length;
-    setSelectedCount(newSelectedCount);
-  }, [packingItems]);
+  const handleCheckboxChange = (index, isChecked) => {
+    setPackingItems(prevItems => {
+      const updatedItems = [...prevItems];
+      updatedItems[index].packed = isChecked;
+      return updatedItems;
+    });
+  };
+
+  const selectedCount = packingItems.filter(item => item.packed).length;
+
   return (
     <div className="app">
       <Logo />

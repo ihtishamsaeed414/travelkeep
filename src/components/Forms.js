@@ -13,7 +13,8 @@ export default function Form({onAddItem}) {
   const handleSelectChange = event => {
     setSelectedNumber(event.target.value);
   };
-  const handleAddClick = () => {
+  const handleAddClick = (event) => {
+    event.preventDefault();
     if (textInput.trim() !== '') { 
       onAddItem({ text: textInput, number: selectedNumber });
       setTextInput('');
