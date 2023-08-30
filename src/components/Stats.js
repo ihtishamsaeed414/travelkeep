@@ -1,17 +1,19 @@
-import React from "react";
-export default function Stats({ totalEntered, selectedCount }) {
-  const percentage = (selectedCount / totalEntered) * 100;
+export default function Stats({ items }) {
+  const totalItems = items.length;
+  const packedItems = items.filter((item) => item.packed).length;
+  const percentagePacked = (packedItems / totalItems) * 100;
   return (
     <footer className="stats">
-      {/* <em>packing statements</em> */}
-      {selectedCount === totalEntered ? (
-        <p>You are ready to go! ✈️</p>
-      ) : (
+  {totalItems === 0 ? (
+        <p>Make sure to add items to the packing list above.Thank you</p>
+      ) : packedItems < totalItems ? (
         <p>
-          You have selected {selectedCount} out of {totalEntered} items.
-          You are {percentage.toFixed(2)}% ready to go.
+          You have Packed: {packedItems} of {totalItems} item ({Math.round(percentagePacked)}%)
         </p>
+      ) : (
+        <p>You are ready to go! ✈️</p>
       )}
+      
     </footer>
   );
 }

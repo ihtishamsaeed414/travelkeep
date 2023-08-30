@@ -1,49 +1,37 @@
-import { useState } from "react";
-export default function Form({onAddItem}) {
-  const [textInput, setTextInput] = useState('');
-  const [selectedNumber, setSelectedNumber] = useState('');
-  const [sortOption, setSortOption] = useState('input');
-  // const [displayedText, setDisplayedText] = useState('');
-
-
-
-  const handleInputChange = (event) => {
-    setTextInput(event.target.value);
-  };
-  const handleSelectChange = event => {
-    setSelectedNumber(event.target.value);
-  };
-  const handleAddClick = (event) => {
-    event.preventDefault();
-    if (textInput.trim() !== '') { 
-      onAddItem({ text: textInput, number: selectedNumber });
-      setTextInput('');
-      setSelectedNumber('');
-    }
+import React, { useState } from 'react';
+export default function Form({ addItem }) {
+  const [description, setDescription] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newItem = { description, quantity, packed: false };
+    addItem(newItem);
+    setDescription('');
+    setQuantity(1);
   };
 
   return (
-    <form className="add-form">
+    <form className="add-form"  onSubmit={handleSubmit}>
       <h3>what do you need for your trip?</h3>
-      {/* For selection of id */}
-      <select value={selectedNumber} onChange={handleSelectChange}>
-        {Array.from({ length: 20 }, (_, index) => (
-          <option key={index} value={index + 1 }>
-            {index + 1}
+      <select
+        value={quantity}
+        onChange={(e) => setQuantity(parseInt(e.target.value))}
+      >
+        {Array.from({ length: 20 }, (_, index) => index + 1).map((number) => (
+          <option key={number} value={number}>
+            {number}
           </option>
         ))}
       </select>
-
       <input
         type="text"
-        placeholder="item..."
-        value={textInput}
-        onChange={handleInputChange}
+        placeholder="Item description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
+    
 
-      <button onClick={handleAddClick}>ADD</button>
-
+      <button>ADD</button>
     </form>
-
   );
 }

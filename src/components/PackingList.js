@@ -1,58 +1,43 @@
-import React, { useState, useEffect } from "react";
-
-export default function PackingList({ items, onClearItems, onDeleteItem, onCheckboxChange }) {
-  const [sortOption, setSortOption] = useState("input");
-  const [checkedItems, setCheckedItems] = useState({});
-
-  const handleSortChange = (event) => {
-    const selectedOption = event.target.value;
-    setSortOption(selectedOption);
+import React, {useState} from "react";
+export default function PackingList({ items, deleteItem, togglePacked, clearAllItems  }) {
+  const [sortType, setSortType] = useState('none'); // Track the current sort type
+  const handleSortChange = (e) => {
+    setSortType(e.target.value);
   };
-
-  const sortItems = (itemsToSort, sortOption) => {
-    if (sortOption === "input") {
-      return [...itemsToSort].sort((a, b) => a.text.localeCompare(b.text));
-    } else if (sortOption === "number") {
-      return [...itemsToSort].sort((a, b) => a.number - b.number);
-    }
-    return itemsToSort;
-  };
-
-  const sortedItems = sortItems(items, sortOption);
-
-  const handleCheckboxChange = (index, isChecked) => {
-    setCheckedItems((prevCheckedItems) => ({
-      ...prevCheckedItems,
-      [index]: isChecked,
-    }));
-    onCheckboxChange(index, isChecked);
-  };
+  const sortedItems = [...items]; // Clone the items array for sorting
+  if (sortType === 'packed') {
+    sortedItems.sort((a, b) => a.packed - b.packed);
+  } else if (sortType === 'description') {
+    sortedItems.sort((a, b) => a.description.localeCompare(b.description));
+  } else if (sortType === 'quantity') {
+    sortedItems.sort((a, b) => a.quantity - b.quantity);
+  }
 
   return (
     <div className="list">
       <ul>
-        {sortedItems.map((item, index) => (
-          <li key={index}>
-            <input
-              type="checkbox"
-              checked={checkedItems[index] || false}
-              onChange={() => {
-                handleCheckboxChange(index, !checkedItems[index]);
-              }}
-            />
-            {item.number} {item.text}
-            <button onClick={() => onDeleteItem(index)}>❌</button>
+        {sortedItems.map((item) => (
+          <li key={item.id}>
+          <input
+          type="checkbox"
+          checked={item.packed}
+          onChange={() => togglePacked(item.id)}
+        />
+            {item.quantity}{item.description}
+            <button onClick={() => deleteItem(item.id)}>❌</button>
           </li>
         ))}
       </ul>
       <div className="actions">
-        <label htmlFor="sort">Sort by:</label>
-        <select value={sortOption} onChange={handleSortChange}>
-          <option value="input">Sort by text</option>
-          <option value="number">Sort by number</option>
+        <select value={sortType} onChange={handleSortChange}>
+          <option value="none">Original Order</option>
+          <option value="packed">Sort by Packed</option>
+          <option value="description">Sort by Description</option>
+          <option value="quantity">Sort by Quantity</option>
         </select>
-        <button onClick={onClearItems}>Clear List</button>
+        <button onClick={clearAllItems}>Clear All</button>
       </div>
     </div>
+    
   );
 }
