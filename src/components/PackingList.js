@@ -1,17 +1,20 @@
 import React, {useState} from "react";
 export default function PackingList({ items, deleteItem, togglePacked, clearAllItems  }) {
-  const [sortType, setSortType] = useState('none'); // Track the current sort type
-  const handleSortChange = (e) => {
-    setSortType(e.target.value);
-  };
-  const sortedItems = [...items]; // Clone the items array for sorting
-  if (sortType === 'packed') {
-    sortedItems.sort((a, b) => a.packed - b.packed);
-  } else if (sortType === 'description') {
-    sortedItems.sort((a, b) => a.description.localeCompare(b.description));
-  } else if (sortType === 'quantity') {
-    sortedItems.sort((a, b) => a.quantity - b.quantity);
-  }
+  const [sortBy, setSortBy] = useState("input"); // Track the current sort type
+ 
+  let sortedItems;
+
+  if (sortBy === "input") sortedItems = items;
+
+  if (sortBy === "description")
+    sortedItems = items
+      .slice()
+      .sort((a, b) => a.description.localeCompare(b.description));
+
+  if (sortBy === "packed")
+    sortedItems = items
+      .slice()
+      .sort((a, b) => Number(a.packed) - Number(b.packed));
 
   return (
     <div className="list">
@@ -29,11 +32,11 @@ export default function PackingList({ items, deleteItem, togglePacked, clearAllI
         ))}
       </ul>
       <div className="actions">
-        <select value={sortType} onChange={handleSortChange}>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
           <option value="none">Original Order</option>
           <option value="packed">Sort by Packed</option>
           <option value="description">Sort by Description</option>
-          <option value="quantity">Sort by Quantity</option>
+          <option value="input">Sort by input</option>
         </select>
         <button onClick={clearAllItems}>Clear All</button>
       </div>
